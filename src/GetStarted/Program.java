@@ -42,8 +42,9 @@ public class Program {
     }
 
     private void getStartedDemo() throws DocumentClientException, IOException {
-        this.client = new DocumentClient("https://querydemo.documents.azure.com",
-                "+9x2hFc7QsZ5hReULaqmBs01amCFiQAJZuoTqdZ79h/fGd2RSYoJVXAegVS7suJBg1pB+RQC8D45gp7bk0rSUw==", new ConnectionPolicy(),
+        this.client = new DocumentClient("https://FILLME.documents.azure.com",
+                "FILLME", 
+                new ConnectionPolicy(),
                 ConsistencyLevel.Session);
 
         this.createDatabaseIfNotExists("FamilyDB");
