@@ -24,7 +24,7 @@ Azure Cosmos DB is a globally distributed multi-model database. One of the suppo
 * From a command prompt or shell, run `mvn exec:java -D exec.mainClass=GetStarted.Program` to run the application.
 
 ## About the code
-The code included in this sample is intended to get you quickly started with a Java application that connects to Azure DocumentDB.
+The code included in this sample is intended to get you quickly started with a Java application that connects to Azure Cosmos DB with the DocumentDB API.
 
 ## More information
 
