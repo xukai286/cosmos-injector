@@ -17,7 +17,7 @@ Azure Cosmos DB is a globally distributed multi-model database. One of the suppo
 
 * Then, clone this repository using `git clone git@github.com:arramac/azure-cosmosdb-java-getting-started.git`
 
-* Next, substitute the endpoint and authorization key in Program.java with your DocumentDB account's values. 
+* Next, substitute the endpoint and authorization key in Program.java with your Cosmos DB account's values. 
 
 * From a command prompt or shell, run `mvn package` to compile and resolve dependencies.
 
