@@ -35,7 +35,7 @@ public class Program {
         try {
             Program p = new Program();
             p.getStartedDemo();
-            System.out.println(String.format("DocumentDB GetStarted completed"));
+            System.out.println(String.format("Demo complete, please hold while resources are deleted"));
         } catch (Exception e) {
             System.out.println(String.format("DocumentDB GetStarted failed with %s", e));
         }
