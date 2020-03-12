@@ -19,7 +19,7 @@ Azure Cosmos DB is a globally distributed multi-model database. One of the suppo
    * JDK 1.7+ (Run `apt-get install default-jdk` if you don't have JDK)
    * Maven (Run `apt-get install maven` if you don't have Maven)
 
-* Then, clone this repository using `git clone git@github.com:arramac/azure-cosmosdb-java-getting-started.git`
+* Then, clone this repository using `git clone https://github.com/Azure-Samples/azure-cosmos-db-documentdb-java-getting-started.git`
 
 * Next, substitute the endpoint and authorization key in Program.java with your Cosmos DB account's values. 
 
