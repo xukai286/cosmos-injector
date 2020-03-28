@@ -1,10 +1,26 @@
 package GetStarted;
 
+import java.util.Random;
+
 public class Family {
     public Family() {
     }
+    
+    
 
-    public String getId() {
+    public void setPk(int pk) {
+		this.pk = pk%10;
+	}
+
+
+
+	public int getPk() {
+		return pk;
+	}
+
+
+
+	public String getId() {
         return id;
     }
 
@@ -67,5 +83,6 @@ public class Family {
     private Child[] children;
     private Address address;
     private boolean isRegistered;
+    private int pk;
 }
 

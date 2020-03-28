@@ -1,6 +1,8 @@
 package GetStarted;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.microsoft.azure.documentdb.ConnectionPolicy;
 import com.microsoft.azure.documentdb.ConsistencyLevel;
@@ -14,6 +16,8 @@ import com.microsoft.azure.documentdb.FeedOptions;
 import com.microsoft.azure.documentdb.FeedResponse;
 import com.microsoft.azure.documentdb.Index;
 import com.microsoft.azure.documentdb.IndexingPolicy;
+import com.microsoft.azure.documentdb.PartitionKey;
+import com.microsoft.azure.documentdb.PartitionKeyDefinition;
 import com.microsoft.azure.documentdb.RangeIndex;
 import com.microsoft.azure.documentdb.RequestOptions;
 
@@ -34,31 +38,39 @@ public class Program {
 
         try {
             Program p = new Program();
-            p.getStartedDemo();
+            p.getStartedDemo(args[0]);
             System.out.println(String.format("Demo complete, please hold while resources are deleted"));
         } catch (Exception e) {
             System.out.println(String.format("DocumentDB GetStarted failed with %s", e));
         }
     }
 
-    private void getStartedDemo() throws DocumentClientException, IOException {
-        this.client = new DocumentClient("https://FILLME.documents.azure.com",
-                "FILLME", 
+    private void getStartedDemo(String name) throws DocumentClientException, IOException {
+        this.client = new DocumentClient("https://michelin-t1.documents.azure.cn",
+                "LdC1spCd0Tnk1qvl21D61Le8k5BciTUsXiit9IQI1kP6a6L6GPHnEV41O0jAa6QqtvH4gcb7UazjpcqtlD3gEA==", 
                 new ConnectionPolicy(),
                 ConsistencyLevel.Session);
 
         this.createDatabaseIfNotExists("FamilyDB");
         this.createDocumentCollectionIfNotExists("FamilyDB", "FamilyCollection");
 
-        Family andersenFamily = getAndersenFamilyDocument();
-        this.createFamilyDocumentIfNotExists("FamilyDB", "FamilyCollection", andersenFamily);
+//        Family andersenFamily = getAndersenFamilyDocument();
+//        this.createFamilyDocumentIfNotExists("FamilyDB", "FamilyCollection", andersenFamily);
 
-        Family wakefieldFamily = getWakefieldFamilyDocument();
-        this.createFamilyDocumentIfNotExists("FamilyDB", "FamilyCollection", wakefieldFamily);
+        for(int i=0;i<100000;i++) {
+            Family wakefieldFamily = getWakefieldFamilyDocument(name,i);
+            this.createFamilyDocumentIfNotExists("FamilyDB", "FamilyCollection", wakefieldFamily);
+
+        }
+        
+
+//        Family wakefieldFamily = getWakefieldFamilyDocument(0);
+//        this.createFamilyDocumentIfNotExists("FamilyDB", "FamilyCollection", wakefieldFamily);
+
 
         this.executeSimpleQuery("FamilyDB", "FamilyCollection");
 
-        this.client.deleteDatabase("/dbs/FamilyDB", null);
+//        this.client.deleteDatabase("/dbs/FamilyDB", null);
     }
 
     private Family getAndersenFamilyDocument() {
@@ -96,9 +108,11 @@ public class Program {
         return andersenFamily;
     }
 
-    private Family getWakefieldFamilyDocument() {
+    private Family getWakefieldFamilyDocument(String name, int i) {
         Family wakefieldFamily = new Family();
-        wakefieldFamily.setId("Wakefield.7");
+        wakefieldFamily.setId(name+"."+i);
+        wakefieldFamily.setPk(i);
+//        wakefieldFamily.setId("Wakefield.7");
         wakefieldFamily.setLastName("Wakefield");
 
         Parent parent1 = new Parent();
@@ -129,8 +143,16 @@ public class Program {
         child2.setFamilyName("Miller");
         child2.setGrade(1);
         child2.setGender("female");
+        
+        List<Child> children = new ArrayList<Child>();
+        for(int j=0;j<10000;j++) {
+        	children.add(child2);
+        	children.add(child1);
+        }
 
-        wakefieldFamily.setChildren(new Child[] { child1, child2 });
+//        wakefieldFamily.setChildren(new Child[] { child1, child2 });
+        Child[] arr = new Child[children.size()];
+        wakefieldFamily.setChildren((Child[]) children.toArray(arr));
 
         Address address = new Address();
         address.setCity("NY");
@@ -178,6 +200,8 @@ public class Program {
             if (de.getStatusCode() == 404) {
                 DocumentCollection collectionInfo = new DocumentCollection();
                 collectionInfo.setId(collectionName);
+//                PartitionKeyDefinition pk = PartitionKeyDefinition.
+//                collectionInfo.setPartitionKey(new PartitionKeyDefinition("id"));
 
                 // Optionally, you can configure the indexing policy of a
                 // collection. Here we configure collections for maximum query
@@ -206,18 +230,24 @@ public class Program {
 
     private void createFamilyDocumentIfNotExists(String databaseName, String collectionName, Family family)
             throws DocumentClientException, IOException {
-        try {
-            String documentLink = String.format("/dbs/%s/colls/%s/docs/%s", databaseName, collectionName, family.getId());
-            this.client.readDocument(documentLink, new RequestOptions());
-        } catch (DocumentClientException de) {
-            if (de.getStatusCode() == 404) {
-                String collectionLink = String.format("/dbs/%s/colls/%s", databaseName, collectionName);
-                this.client.createDocument(collectionLink, family, new RequestOptions(), true);
-                this.writeToConsoleAndPromptToContinue(String.format("Created Family %s", family.getId()));
-            } else {
-                throw de;
-            }
-        }
+    	
+      String collectionLink = String.format("/dbs/%s/colls/%s", databaseName, collectionName);
+      this.client.createDocument(collectionLink, family, new RequestOptions(), true);
+      this.writeToConsoleAndPromptToContinue(String.format("Created Family %s", family.getId()));
+    	
+    	
+//        try {
+//            String documentLink = String.format("/dbs/%s/colls/%s/docs/%s", databaseName, collectionName, family.getId());
+//            this.client.readDocument(documentLink, new RequestOptions());
+//        } catch (DocumentClientException de) {
+//            if (de.getStatusCode() == 404) {
+//                String collectionLink = String.format("/dbs/%s/colls/%s", databaseName, collectionName);
+//                this.client.createDocument(collectionLink, family, new RequestOptions(), true);
+//                this.writeToConsoleAndPromptToContinue(String.format("Created Family %s", family.getId()));
+//            } else {
+//                throw de;
+//            }
+//        }
     }
 
     private void executeSimpleQuery(String databaseName, String collectionName) {
@@ -262,8 +292,8 @@ public class Program {
 
     private void writeToConsoleAndPromptToContinue(String text) throws IOException {
         System.out.println(text);
-        System.out.println("Press any key to continue ...");
-        System.in.read();
+//        System.out.println("Press any key to continue ...");
+//        System.in.read();
     }
 }
 
